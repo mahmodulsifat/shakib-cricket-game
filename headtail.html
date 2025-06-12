@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>সাকিব ভাই বনাম কম্পিউটার</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      text-align: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    #scoreboard {
+      font-size: 20px;
+      margin: 15px 0;
+    }
+
+    .button-container {
+      margin: 20px;
+    }
+
+    .hit-button {
+      font-size: 24px;
+      padding: 15px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hit-button:hover {
+      background-color: #388e3c;
+    }
+
+    #message {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    .emoji {
+      font-size: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏏 সাকিব ভাই এমপি সাহেব বনাম কম্পিউটার 🤖</h1>
+
+  <div id="scoreboard">
+    <p>সাকিব ভাইয়ের রান: <span id="playerScore">0</span></p>
+    <p>কম্পিউটারের রান: <span id="computerScore">0</span></p>
+  </div>
+
+  <div id="inputArea" class="button-container">
+    <p>১-১০ এর মধ্যে একটি সংখ্যা বেছে নিন:</p>
+    <div id="buttons"></div>
+  </div>
+
+  <div id="message"></div>
+
+  <script>
+    let playerScore = 0;
+    let computerScore = 0;
+    let gamePhase = 'player'; // player or computer
+    let target = 0;
+
+    const playerScoreEl = document.getElementById('playerScore');
+    const computerScoreEl = document.getElementById('computerScore');
+    const messageEl = document.getElementById('message');
+    const buttonsEl = document.getElementById('buttons');
+
+    // Generate 1-10 buttons
+    for (let i = 1; i <= 10; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = 'hit-button';
+      btn.onclick = () => playRound(i);
+      buttonsEl.appendChild(btn);
+    }
+
+    function playRound(playerHit) {
+      const computerHit = Math.floor(Math.random() * 10) + 1;
+
+      if (gamePhase === 'player') {
+        if (playerHit === computerHit) {
+          messageEl.innerHTML = "💥 আউট! সাকিব ভাইয়ের ইনিংস শেষ! 😱<br>🎯 লক্ষ্য: " + playerScore;
+          target = playerScore;
+          gamePhase = 'computer';
+        } else {
+          playerScore += playerHit;
+          playerScoreEl.textContent = playerScore;
+          messageEl.innerHTML = `সাকিব ভাই মারলেন: ${playerHit} | কম্পিউটার বল করলো: ${computerHit} 🏏`;
+        }
+      } else if (gamePhase === 'computer') {
+        if (playerHit === computerHit) {
+          messageEl.innerHTML = "💥 কম্পিউটার আউট! 🤖 তার ইনিংস শেষ!";
+          declareWinner();
+        } else {
+          computerScore += computerHit;
+          computerScoreEl.textContent = computerScore;
+          messageEl.innerHTML = `আপনি বল করলেন: ${playerHit} | কম্পিউটার মারলো: ${computerHit} 🧨`;
+
+          if (computerScore > target) {
+            declareWinner();
+          }
+        }
+      }
+    }
+
+    function declareWinner() {
+      const final =
+        playerScore > computerScore
+          ? "🎉 সাকিব ভাই জিতছেন। এবার কমিশন দেন।"
+          : playerScore < computerScore
+          ? "😢 কম্পিউটার জিতেছে। এবার ক্ষমা চাইতে হবে।"
+          : "🤝 খেলা ড্র হয়েছে। দু’জনেই গরিব!";
+
+      messageEl.innerHTML += "<br><br><strong>" + final + "</strong>";
+      disableButtons();
+    }
+
+    function disableButtons() {
+      const allBtns = document.querySelectorAll('.hit-button');
+      allBtns.forEach((btn) => (btn.disabled = true));
+    }
+  </script>
+</body>
+</html>
